@@ -1,0 +1,98 @@
+server:
+  port: ${SERVER_PORT:9090}
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  shutdown: graceful
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3307/media_db?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf-8&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:10}
+      minimum-idle: ${DB_POOL_MIN_IDLE:2}
+      connection-timeout: 3000
+  mvc:
+    async:
+      request-timeout: ${AI_INTERACTIVE_TIMEOUT_MS:180000}
+  sql:
+    init:
+      mode: never
+  servlet:
+    multipart:
+      max-file-size: 2048MB
+      max-request-size: 2048MB
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      database: ${REDIS_DATABASE:0}
+      password: ${REDIS_PASSWORD:}
+      timeout: 3000ms
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+jwt:
+  secret: ${JWT_SECRET:please-change-this-secret-please-change-this-secret}
+  expire-hours: ${JWT_EXPIRE_HOURS:24}
+
+ai:
+  deepseek:
+    api-key: ${SILICONFLOW_API_KEY:}
+    base-url: ${SILICONFLOW_BASE_URL:https://api.siliconflow.cn/v1}
+    model: ${LLM_MODEL:deepseek-ai/DeepSeek-V3.2}
+    timeout-seconds: ${LLM_TIMEOUT_SECONDS:300}
+    input-price-per-million: ${LLM_INPUT_PRICE_PER_MILLION:0}
+    output-price-per-million: ${LLM_OUTPUT_PRICE_PER_MILLION:0}
+  embedding:
+    model: ${EMBEDDING_MODEL:BAAI/bge-m3}
+  asr:
+    url: ${ASR_URL:https://api.siliconflow.cn/v1/audio/transcriptions}
+    model: ${ASR_MODEL:TeleAI/TeleSpeechASR}
+
+agent:
+  budget:
+    max-rounds: ${AGENT_MAX_ROUNDS:2}
+    max-duration-ms: ${AGENT_MAX_DURATION_MS:120000}
+    max-estimated-tokens: ${AGENT_MAX_ESTIMATED_TOKENS:50000}
+    max-estimated-cost: ${AGENT_MAX_ESTIMATED_COST:0}
+  evaluation:
+    enabled: ${AGENT_EVALUATION_ENABLED:false}
+
+vector:
+  qdrant:
+    enabled: ${QDRANT_ENABLED:false}
+    url: ${QDRANT_URL:http://localhost:6333}
+    api-key: ${QDRANT_API_KEY:}
+    collection: ${QDRANT_COLLECTION:video_chunks}
+
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  accessKey: ${MINIO_ACCESS_KEY:}
+  secretKey: ${MINIO_SECRET_KEY:}
+  bucketName: ${MINIO_BUCKET:media}
+  public-read: ${MINIO_PUBLIC_READ:false}
+
+tool:
+  ytdlp:
+    path: ${YTDLP_PATH:yt-dlp}
+  ffmpeg:
+    dir: ${FFMPEG_DIR:}
+  ocr:
+    command: ${OCR_COMMAND:tesseract}
+
+rocketmq:
+  name-server: ${ROCKETMQ_NAME_SERVER:127.0.0.1:9876}
+  producer:
+    group: ${ROCKETMQ_PRODUCER_GROUP:video-analysis-producer}
+    send-message-timeout: 3000
+  topic:
+    video-analysis: ${ROCKETMQ_ANALYSIS_TOPIC:video-analysis-topic}
+    video-analysis-dead: ${ROCKETMQ_ANALYSIS_DEAD_TOPIC:video-analysis-dead-topic}
+  consumer:
+    group: ${ROCKETMQ_ANALYSIS_GROUP:video-analysis-consumer}

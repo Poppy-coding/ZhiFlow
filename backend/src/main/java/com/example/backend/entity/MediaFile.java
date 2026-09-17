@@ -1,0 +1,37 @@
+package com.example.backend.entity;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+/**
+ * 媒体文件实体，对应 media_files 表。
+ */
+@Data
+@TableName("media_files")
+public class MediaFile {
+
+    @TableId(type = IdType.AUTO)
+    private Long id;
+
+    private Long userId;
+
+    private String filename;
+
+    private String status;
+
+    private String filePath;
+
+    private String contentHash;
+
+    private String aiSummary;
+
+    private String transcriptText;
+
+    private String coverUrl;
+
+    private LocalDateTime uploadTime;
+}
