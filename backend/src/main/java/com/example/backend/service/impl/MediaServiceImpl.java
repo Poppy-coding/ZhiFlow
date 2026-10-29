@@ -99,6 +99,31 @@ public class MediaServiceImpl implements MediaService {
     }
 
     /**
+     * 查看该文件是否用户本人上传
+     * @param mediaId 媒体文件 ID
+     * @param userId 用户 ID
+     * @return
+     */
+    @Override
+    public MediaFile requireOwnedMedia(Long mediaId, Long userId) {
+        if (mediaId == null) {
+            throw new IllegalArgumentException("文件ID不能为空");
+        }
+        if (userId == null) {
+            throw new IllegalArgumentException("用户不能为空");
+        }
+
+        MediaFile mediaFile = mediaFileMapper.selectById(mediaId);
+        if (mediaFile == null) {
+            throw new NoSuchElementException("文件不存在");
+        }
+        if (!Objects.equals(mediaFile.getUserId(), userId)) {
+            throw new SecurityException("无权访问该文件");
+        }
+        return mediaFile;
+    }
+
+    /**
      * 获取视频播放地址
      * @param id
      * @param userId

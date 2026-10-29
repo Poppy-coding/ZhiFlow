@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Resource
-    private StringRedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     @Resource
     private UserMapper userMapper;
@@ -198,14 +198,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private boolean loginAttemptAllowed(String username) {
-        String value = redisTemplate.opsForValue().get(LOGIN_FAILURE_PREFIX + username);
+        String value = stringRedisTemplate.opsForValue().get(LOGIN_FAILURE_PREFIX + username);
         if (value == null) {
             return true;
         }
         try {
             return Long.parseLong(value) < MAX_LOGIN_FAILURES;
         } catch (NumberFormatException e) {
-            redisTemplate.delete(LOGIN_FAILURE_PREFIX + username);
+            stringRedisTemplate.delete(LOGIN_FAILURE_PREFIX + username);
             return true;
         }
     }
@@ -218,14 +218,14 @@ public class AuthServiceImpl implements AuthService {
      */
     private void recordLoginFailure(String username) {
         String key = LOGIN_FAILURE_PREFIX + username;
-        Long failures = redisTemplate.opsForValue().increment(key);
+        Long failures = stringRedisTemplate.opsForValue().increment(key);
         if (failures != null && failures == 1) {
-            redisTemplate.expire(key, LOGIN_FAILURE_WINDOW_MINUTES, TimeUnit.MINUTES);
+            stringRedisTemplate.expire(key, LOGIN_FAILURE_WINDOW_MINUTES, TimeUnit.MINUTES);
         }
     }
 
     private void clearLoginFailures(String username) {
-        redisTemplate.delete(LOGIN_FAILURE_PREFIX + username);
+        stringRedisTemplate.delete(LOGIN_FAILURE_PREFIX + username);
     }
 
     private String normalizeUsername(String username) {

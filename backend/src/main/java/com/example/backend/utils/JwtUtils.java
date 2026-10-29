@@ -11,8 +11,6 @@ import java.util.Date;
 
 public final class JwtUtils {
 
-    private JwtUtils() {
-    }
 
     public static String generateToken(Long userId, String secret, long expireHours) {
         Date now = new Date();
